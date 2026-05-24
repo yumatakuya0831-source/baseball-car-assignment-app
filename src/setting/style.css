@@ -61,8 +61,51 @@ button {
 .card {
   background: #ffffff;
   border: 1px solid #d9dee7;
-  border-radius: 20px;
+  border-radius: 8px;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.menu-section {
+  display: grid;
+  gap: 14px;
+}
+
+.menu-button {
+  width: 100%;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d9dee7;
+  border-left: 8px solid #22c55e;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 18px;
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.car-menu-button {
+  border-left-color: #1f3f98;
+}
+
+.menu-button:hover {
+  border-color: #aeb8c6;
+  transform: translateY(-1px);
+}
+
+.menu-button-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.menu-button-text {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
 }
 
 .form-card {
@@ -73,10 +116,10 @@ button {
 .list-title {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
 }
 
-.player-form {
+.registration-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -98,7 +141,7 @@ button {
 .form-group select {
   width: 100%;
   border: 1px solid #cfd6df;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 12px 14px;
   background: #ffffff;
 }
@@ -119,9 +162,10 @@ button {
 .primary-btn,
 .secondary-btn,
 .edit-btn,
-.delete-btn {
+.delete-btn,
+.back-button {
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 14px;
   font-weight: 700;
 }
@@ -164,23 +208,18 @@ button {
   margin-top: 22px;
 }
 
-.car-form-card {
-  margin-top: 28px;
-}
-
-.player-card,
-.car-card {
+.list-card {
   display: flex;
   overflow: hidden;
   margin-bottom: 12px;
 }
 
-.player-card-bar {
+.list-card-bar {
   width: 6px;
   background: #22c55e;
 }
 
-.player-card-body {
+.list-card-body {
   flex: 1;
   display: flex;
   justify-content: space-between;
@@ -189,18 +228,18 @@ button {
   padding: 16px;
 }
 
-.player-name {
+.list-card-title {
   font-size: 18px;
   font-weight: 700;
 }
 
-.car-meta {
+.list-card-meta {
   margin-top: 6px;
   font-size: 14px;
   color: #6b7280;
 }
 
-.player-actions {
+.list-card-actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -225,15 +264,14 @@ button {
 .back-button {
   width: 100%;
   margin-top: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 700;
-  background: #3bf7ee;
+  background: #374151;
   color: #ffffff;
-  cursor: pointer;
 }
 
+.primary-btn:hover,
+.secondary-btn:hover,
+.edit-btn:hover,
+.delete-btn:hover,
 .back-button:hover {
   opacity: 0.9;
 }
@@ -257,12 +295,12 @@ button {
     font-size: 16px;
   }
 
-  .player-card-body {
+  .list-card-body {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .player-actions {
+  .list-card-actions {
     width: 100%;
     flex-direction: row;
   }
