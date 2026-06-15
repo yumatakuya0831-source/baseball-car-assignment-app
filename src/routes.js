@@ -1,8 +1,6 @@
 export const routes = {
   setting: "/setting",
   importChouseisan: "/setting/import",
-  players: "/setting/players",
-  cars: "/setting/cars",
   expeditions: "/expeditions",
 };
 

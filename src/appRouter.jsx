@@ -1,7 +1,5 @@
 import SettingHome from "./setting/SettingHome.jsx";
 import ChouseisanImport from "./chouseisanImport/index.jsx";
-import PlayerRegistration from "./playerRegistration/index.jsx";
-import CarRegistration from "./carRegistration/index.jsx";
 import ExpeditionList from "./expeditions/ExpeditionList.jsx";
 import AssignmentPage from "./assignments/AssignmentPage.jsx";
 import AssignmentResult from "./assignments/AssignmentResult.jsx";
@@ -10,14 +8,6 @@ import usePathname from "./usePathname";
 
 export default function AppRouter() {
   const pathname = usePathname();
-
-  if (pathname === routes.players) {
-    return <PlayerRegistration />;
-  }
-
-  if (pathname === routes.cars) {
-    return <CarRegistration />;
-  }
 
   if (pathname === routes.importChouseisan) {
     return <ChouseisanImport />;
