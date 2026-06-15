@@ -401,6 +401,21 @@ button {
   margin-top: 16px;
 }
 
+.file-input {
+  width: 100%;
+  border: 1px dashed #cfd6df;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.html-paste-area {
+  min-height: 160px;
+  resize: vertical;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+}
+
 .share-card {
   margin-bottom: 16px;
 }

@@ -16,6 +16,7 @@ const sampleUrl = "https://chouseisan.com/s?h=720f5919c60c4ac29361a5b2158d6c4f";
 export default function ChouseisanImport() {
   const [url, setUrl] = useState(sampleUrl);
   const [eventData, setEventData] = useState(null);
+  const [htmlText, setHtmlText] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +66,30 @@ export default function ChouseisanImport() {
       console.error("chouseisan file parse error:", fileError);
       setStatus("");
       setError(fileError.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasteImport = async () => {
+    const trimmedHtml = htmlText.trim();
+    if (!trimmedHtml) {
+      setError("HTMLを貼り付けてください。");
+      return;
+    }
+
+    setError("");
+    setStatus("貼り付け内容を読み込んでいます...");
+    setIsLoading(true);
+
+    try {
+      const parsed = parseChouseisanEvent(trimmedHtml);
+      setEventData({ ...parsed, sourceUrl: url });
+      setStatus("読み込みました。内容を確認して保存してください。");
+    } catch (pasteError) {
+      console.error("chouseisan pasted html parse error:", pasteError);
+      setStatus("");
+      setError(pasteError.message);
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +147,39 @@ export default function ChouseisanImport() {
         <p className="helper-text">
           URL取込が制限された場合は、調整さんページをHTMLとして保存して選択してください。
         </p>
-        <input type="file" accept=".html,.htm,text/html" onChange={handleFileChange} />
+        <input
+          className="file-input"
+          type="file"
+          accept=".html,.htm,text/html"
+          onChange={handleFileChange}
+        />
+      </section>
+
+      <section className="card form-card import-fallback-card">
+        <h2 className="section-title">HTML貼り付け取込</h2>
+        <p className="helper-text">
+          スマホでファイル選択できない場合は、調整さんページのHTMLを貼り付けてください。
+        </p>
+        <div className="registration-form">
+          <div className="form-group">
+            <label htmlFor="chouseisanHtml">HTML</label>
+            <textarea
+              id="chouseisanHtml"
+              className="html-paste-area"
+              value={htmlText}
+              onChange={(event) => setHtmlText(event.target.value)}
+              placeholder="<html>..."
+            />
+          </div>
+          <button
+            type="button"
+            className="primary-btn full-width-btn"
+            onClick={handlePasteImport}
+            disabled={isLoading}
+          >
+            貼り付け内容を読み込む
+          </button>
+        </div>
       </section>
 
       {eventData && (
