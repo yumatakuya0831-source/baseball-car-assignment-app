@@ -2,6 +2,7 @@ export const routes = {
   setting: "/setting",
   importChouseisan: "/setting/import",
   expeditions: "/expeditions",
+  assignmentHistory: "/assignment-history",
 };
 
 export function navigateTo(path) {

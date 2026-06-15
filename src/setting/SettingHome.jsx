@@ -23,6 +23,14 @@ export default function SettingHome() {
           <span className="menu-button-text">試合ごとの参加者・道具を車両へ手動配車</span>
         </button>
 
+        <button
+          type="button"
+          className="menu-button history-menu-button"
+          onClick={() => navigateTo(routes.assignmentHistory)}
+        >
+          <span className="menu-button-title">配車履歴</span>
+          <span className="menu-button-text">過去の配車結果をLINE用にコピー</span>
+        </button>
       </section>
     </AppShell>
   );
