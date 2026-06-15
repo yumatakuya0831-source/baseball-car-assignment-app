@@ -1,6 +1,13 @@
 import { useEffect } from "react";
 import { auth } from "../../lib/firebase";
-import { GoogleAuthProvider, getRedirectResult, signInWithRedirect } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  getRedirectResult,
+  setPersistence,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -14,7 +21,14 @@ export default function LoginPage() {
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-      await signInWithRedirect(auth, provider);
+      await setPersistence(auth, browserLocalPersistence);
+
+      if (isMobileDevice()) {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("google login error:", error);
       alert(`Googleログインに失敗しました。Firebase Authenticationの設定を確認してください。\n${error.code ?? ""}`);
@@ -38,4 +52,8 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
 }
