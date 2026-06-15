@@ -4,7 +4,6 @@ import {
   browserLocalPersistence,
   setPersistence,
   signInWithPopup,
-  signInWithRedirect,
 } from "firebase/auth";
 
 export default function LoginPage() {
@@ -13,11 +12,6 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
       await setPersistence(auth, browserLocalPersistence);
-
-      if (isMobileDevice()) {
-        await signInWithRedirect(auth, provider);
-        return;
-      }
 
       const result = await signInWithPopup(auth, provider);
       if (!result.user) {
@@ -46,8 +40,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
-
-function isMobileDevice() {
-  return /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
 }
