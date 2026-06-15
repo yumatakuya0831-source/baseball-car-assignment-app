@@ -54,8 +54,102 @@ button {
   font-weight: 600;
 }
 
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: 12px;
+}
+
+.user-name {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .content {
   padding: 20px 16px 40px;
+}
+
+.login-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  width: 100%;
+  padding: 32px 24px;
+}
+
+.login-brand {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.login-title {
+  color: #1f2937;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.login-subtitle {
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.google-login-btn {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #cfd6df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.google-mark {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1a73e8;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1px #d9dee7;
+}
+
+.auth-loading {
+  margin: 24px;
 }
 
 .card {
@@ -90,6 +184,14 @@ button {
 
 .car-menu-button {
   border-left-color: #1f3f98;
+}
+
+.assignment-menu-button {
+  border-left-color: #14b8a6;
+}
+
+.import-menu-button {
+  border-left-color: #f59e0b;
 }
 
 .menu-button:hover {
@@ -204,6 +306,13 @@ button {
   margin-top: 6px;
 }
 
+.summary-title {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .list-section {
   margin-top: 22px;
 }
@@ -268,6 +377,255 @@ button {
   color: #ffffff;
 }
 
+.full-width-btn {
+  width: 100%;
+}
+
+.wide-btn {
+  width: auto;
+  min-width: 96px;
+}
+
+.helper-text {
+  margin: 0 0 14px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.import-fallback-card {
+  margin-top: 16px;
+}
+
+.no-top-margin {
+  margin-top: 0;
+}
+
+.expedition-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid #d9dee7;
+  background: #ffffff;
+  text-align: left;
+}
+
+.tool-form {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 10px;
+}
+
+.tool-form input,
+.capacity-field input {
+  width: 100%;
+  border: 1px solid #cfd6df;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.tool-note {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.drop-zone {
+  margin-top: 16px;
+  padding: 14px;
+}
+
+.unassigned-zone {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+}
+
+.assignment-cars {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.car-assignment-card,
+.result-card {
+  padding: 14px;
+}
+
+.assignment-zone-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.assignment-zone-header .section-title {
+  margin-bottom: 6px;
+}
+
+.count-badge {
+  flex: 0 0 auto;
+  min-width: 58px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.capacity-field {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.assignment-items,
+.result-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.assignment-item,
+.result-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px;
+  text-align: left;
+}
+
+.assignment-item {
+  cursor: grab;
+}
+
+.assignment-item:active {
+  cursor: grabbing;
+}
+
+.tool-item {
+  border-color: #fbbf24;
+  background: #fffbeb;
+}
+
+.item-label {
+  border-radius: 999px;
+  background: #1f3f98;
+  color: #ffffff;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tool-item .item-label,
+.result-row .item-label {
+  background: #14b8a6;
+}
+
+.item-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.item-seat {
+  color: #6b7280;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.mini-btn {
+  grid-column: span 1;
+  border: none;
+  border-radius: 8px;
+  background: #e5e7eb;
+  color: #374151;
+  padding: 7px 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mini-btn.danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.empty-assignment {
+  margin-top: 10px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #6b7280;
+  padding: 14px;
+  text-align: center;
+}
+
+.over-capacity {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.inline-warning {
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.action-row .primary-btn {
+  flex: 1;
+}
+
+.inline-back {
+  width: auto;
+  flex: 1;
+  margin-top: 0;
+}
+
+.notice-card,
+.error-card {
+  margin-top: 16px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.notice-card {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.error-card {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
 .primary-btn:hover,
 .secondary-btn:hover,
 .edit-btn:hover,
@@ -308,5 +666,20 @@ button {
   .edit-btn,
   .delete-btn {
     flex: 1;
+  }
+
+  .tool-form {
+    grid-template-columns: 1fr;
+  }
+
+  .assignment-item,
+  .result-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .item-seat,
+  .mini-btn {
+    grid-column: 2;
+    justify-self: start;
   }
 }
