@@ -1,22 +1,13 @@
-import { useEffect } from "react";
 import { auth } from "../../lib/firebase";
 import {
   GoogleAuthProvider,
   browserLocalPersistence,
-  getRedirectResult,
   setPersistence,
   signInWithPopup,
   signInWithRedirect,
 } from "firebase/auth";
 
 export default function LoginPage() {
-  useEffect(() => {
-    getRedirectResult(auth).catch((error) => {
-      console.error("google redirect login error:", error);
-      alert(`Googleログインに失敗しました。Firebase Authenticationの設定を確認してください。\n${error.code ?? ""}`);
-    });
-  }, []);
-
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
