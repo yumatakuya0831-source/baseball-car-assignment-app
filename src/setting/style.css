@@ -240,16 +240,19 @@ button {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
   border: 1px solid #cfd6df;
   border-radius: 8px;
   padding: 12px 14px;
   background: #ffffff;
+  color: #1f2937;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: #1f3f98;
   box-shadow: 0 0 0 3px rgba(31, 63, 152, 0.12);
@@ -396,6 +399,35 @@ button {
 
 .import-fallback-card {
   margin-top: 16px;
+}
+
+.share-card {
+  margin-bottom: 16px;
+}
+
+.share-comment {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.share-textarea {
+  width: 100%;
+  min-height: 220px;
+  margin-top: 12px;
+  border: 1px solid #cfd6df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+.compact-notice {
+  margin-top: 12px;
 }
 
 .no-top-margin {

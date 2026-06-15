@@ -7,10 +7,15 @@ import {
   calculateUsedSeats,
   getAssignedItemIds,
 } from "./assignmentLogic";
+import { buildLineShareText } from "./shareText";
 
 export default function AssignmentResult({ expeditionId }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [placeName, setPlaceName] = useState("");
+  const [comment, setComment] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
+  const [showShareText, setShowShareText] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -54,6 +59,33 @@ export default function AssignmentResult({ expeditionId }) {
 
   const assignedItemIds = new Set(getAssignedItemIds(assignmentsByCarId));
   const unassignedItems = items.filter((item) => !assignedItemIds.has(item.id));
+  const shareText = data
+    ? buildLineShareText({
+        expeditionTitle: data.expedition.title,
+        placeName,
+        comment,
+        cars: data.cars,
+        assignmentsByCarId,
+        itemsById,
+      })
+    : "";
+
+  const handleCopy = async () => {
+    if (unassignedItems.length > 0) {
+      const ok = window.confirm("未配車の対象があります。このままコピーしますか？");
+      if (!ok) return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopyStatus("LINE用テキストをコピーしました。");
+      setShowShareText(false);
+    } catch (error) {
+      console.error("clipboard copy error:", error);
+      setCopyStatus("自動コピーできませんでした。下のテキストを選択してコピーしてください。");
+      setShowShareText(true);
+    }
+  };
 
   if (loading) {
     return (
@@ -73,6 +105,41 @@ export default function AssignmentResult({ expeditionId }) {
 
   return (
     <AppShell title="配車結果" subtitle={data.expedition.title}>
+      <section className="card form-card share-card">
+        <h2 className="section-title">LINE用コピー</h2>
+        <div className="registration-form">
+          <div className="form-group">
+            <label htmlFor="placeName">場所名</label>
+            <input
+              id="placeName"
+              type="text"
+              value={placeName}
+              onChange={(event) => setPlaceName(event.target.value)}
+              placeholder="例：○○グラウンド"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="shareComment">コメント</label>
+            <textarea
+              id="shareComment"
+              className="share-comment"
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="例：集合時間など"
+            />
+          </div>
+          <button type="button" className="primary-btn full-width-btn" onClick={handleCopy}>
+            LINE用にコピー
+          </button>
+        </div>
+
+        {copyStatus && <div className="notice-card compact-notice">{copyStatus}</div>}
+
+        {(showShareText || copyStatus) && (
+          <textarea className="share-textarea" readOnly value={shareText} />
+        )}
+      </section>
+
       <section className="assignment-cars result-cars">
         {data.cars.map((car) => {
           const assignment = assignmentsByCarId[car.id] ?? { passengerIds: [], toolIds: [] };
