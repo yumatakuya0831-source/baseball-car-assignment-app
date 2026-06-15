@@ -11,10 +11,8 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
-const sampleUrl = "https://chouseisan.com/s?h=720f5919c60c4ac29361a5b2158d6c4f";
-
 export default function ChouseisanImport() {
-  const [url, setUrl] = useState(sampleUrl);
+  const [url, setUrl] = useState("");
   const [eventData, setEventData] = useState(null);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -23,6 +21,12 @@ export default function ChouseisanImport() {
   const canSave = useMemo(() => Boolean(eventData && !isLoading), [eventData, isLoading]);
 
   const handleFetch = async () => {
+    if (!url.trim()) {
+      setStatus("");
+      setError("調整さんURLを入力してください。");
+      return;
+    }
+
     setError("");
     setStatus("調整さんを読み込んでいます...");
     setIsLoading(true);
