@@ -562,6 +562,11 @@ button {
   cursor: grab;
 }
 
+.selected-assignment-item {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.16);
+}
+
 .assignment-item:active {
   cursor: grabbing;
 }
@@ -634,6 +639,54 @@ button {
   padding: 8px 10px;
   font-size: 13px;
   font-weight: 700;
+}
+
+.move-panel {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  margin-top: 16px;
+  padding: 14px;
+  border-color: #14b8a6;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.16);
+}
+
+.move-destination-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.move-destination-btn {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 12px;
+  text-align: left;
+}
+
+.move-destination-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.move-destination-meta {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.over-capacity-btn {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.unassign-btn {
+  border-color: #cbd5e1;
+  background: #f8fafc;
 }
 
 .action-row {

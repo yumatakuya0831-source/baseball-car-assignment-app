@@ -21,6 +21,7 @@ export default function AssignmentPage({ expeditionId }) {
   const [assignmentsByCarId, setAssignmentsByCarId] = useState({});
   const [toolName, setToolName] = useState("");
   const [draggingItemId, setDraggingItemId] = useState("");
+  const [selectedItemId, setSelectedItemId] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -89,6 +90,7 @@ export default function AssignmentPage({ expeditionId }) {
   );
 
   const unassignedItems = items.filter((item) => !assignedItemIds.has(item.id));
+  const selectedItem = selectedItemId ? itemsById[selectedItemId] : null;
 
   const handleDrop = (targetCarId) => {
     if (!draggingItemId) return;
@@ -96,6 +98,14 @@ export default function AssignmentPage({ expeditionId }) {
       moveAssignmentItem(current, draggingItemId, targetCarId)
     );
     setDraggingItemId("");
+  };
+
+  const handleMoveSelectedItem = (targetCarId) => {
+    if (!selectedItemId) return;
+    setAssignmentsByCarId((current) =>
+      moveAssignmentItem(current, selectedItemId, targetCarId)
+    );
+    setSelectedItemId("");
   };
 
   const handleAddTool = async (event) => {
@@ -116,6 +126,7 @@ export default function AssignmentPage({ expeditionId }) {
     try {
       await deleteTool(expeditionId, item.sourceId);
       setAssignmentsByCarId((current) => moveAssignmentItem(current, item.id, null));
+      setSelectedItemId((current) => (current === item.id ? "" : current));
       await reload();
     } catch (error) {
       console.error("tool delete error:", error);
@@ -208,7 +219,9 @@ export default function AssignmentPage({ expeditionId }) {
         <ItemList
           items={unassignedItems}
           onDragStart={setDraggingItemId}
+          onSelect={setSelectedItemId}
           onDeleteTool={handleDeleteTool}
+          selectedItemId={selectedItemId}
         />
       </section>
 
@@ -255,15 +268,28 @@ export default function AssignmentPage({ expeditionId }) {
               <ItemList
                 items={assignedItems}
                 onDragStart={setDraggingItemId}
+                onSelect={setSelectedItemId}
                 onRemove={(itemId) =>
                   setAssignmentsByCarId((current) => moveAssignmentItem(current, itemId, null))
                 }
                 onDeleteTool={handleDeleteTool}
+                selectedItemId={selectedItemId}
               />
             </div>
           );
         })}
       </section>
+
+      {selectedItem && (
+        <MovePanel
+          cars={data.cars}
+          selectedItem={selectedItem}
+          assignmentsByCarId={assignmentsByCarId}
+          itemsById={itemsById}
+          onMove={handleMoveSelectedItem}
+          onCancel={() => setSelectedItemId("")}
+        />
+      )}
 
       <div className="action-row">
         <button type="button" className="secondary-btn wide-btn" onClick={() => navigateTo(routes.expeditions)}>
@@ -277,7 +303,7 @@ export default function AssignmentPage({ expeditionId }) {
   );
 }
 
-function ItemList({ items, onDragStart, onRemove, onDeleteTool }) {
+function ItemList({ items, onDragStart, onSelect, onRemove, onDeleteTool, selectedItemId }) {
   if (items.length === 0) {
     return <div className="empty-assignment">対象なし</div>;
   }
@@ -288,27 +314,111 @@ function ItemList({ items, onDragStart, onRemove, onDeleteTool }) {
         <div
           className={`assignment-item ${
             item.kind === "tool" || item.kind === "manager" ? "tool-item" : ""
-          }`}
+          } ${selectedItemId === item.id ? "selected-assignment-item" : ""}`}
           draggable
           key={item.id}
+          role="button"
+          tabIndex={0}
+          onClick={() => onSelect(item.id)}
           onDragStart={() => onDragStart(item.id)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              onSelect(item.id);
+            }
+          }}
         >
           <span className="item-label">{item.label}</span>
           <span className="item-name">{item.name}</span>
           <span className="item-seat">{item.seatCost}名分</span>
           {onRemove && (
-            <button type="button" className="mini-btn" onClick={() => onRemove(item.id)}>
+            <button
+              type="button"
+              className="mini-btn"
+              onClick={(event) => {
+                event.stopPropagation();
+                onRemove(item.id);
+              }}
+            >
               外す
             </button>
           )}
           {(item.kind === "tool" || item.kind === "manager") && (
-            <button type="button" className="mini-btn danger" onClick={() => onDeleteTool(item)}>
+            <button
+              type="button"
+              className="mini-btn danger"
+              onClick={(event) => {
+                event.stopPropagation();
+                onDeleteTool(item);
+              }}
+            >
               削除
             </button>
           )}
         </div>
       ))}
     </div>
+  );
+}
+
+function MovePanel({
+  cars,
+  selectedItem,
+  assignmentsByCarId,
+  itemsById,
+  onMove,
+  onCancel,
+}) {
+  return (
+    <section className="card move-panel">
+      <div className="assignment-zone-header">
+        <div>
+          <h2 className="section-title">移動先を選択</h2>
+          <div className="list-card-meta">
+            {selectedItem.label}：{selectedItem.name}
+          </div>
+        </div>
+        <button type="button" className="mini-btn" onClick={onCancel}>
+          閉じる
+        </button>
+      </div>
+
+      <div className="move-destination-list">
+        {cars.map((car) => {
+          const assignedItems = getItemsForCar(car.id, assignmentsByCarId, itemsById).filter(
+            (item) => item.id !== selectedItem.id
+          );
+          const nextUsedSeats = calculateUsedSeats(car, [...assignedItems, selectedItem]);
+          const capacity = Number(car.capacity);
+          const isOverCapacity = capacity > 0 && nextUsedSeats > capacity;
+
+          return (
+            <button
+              type="button"
+              className={`move-destination-btn ${isOverCapacity ? "over-capacity-btn" : ""}`}
+              key={car.id}
+              onClick={() => onMove(car.id)}
+            >
+              <span className="move-destination-title">{car.carName}</span>
+              <span className="move-destination-meta">運転者：{car.driverName}</span>
+              <span className="move-destination-meta">
+                {capacity > 0 ? `${nextUsedSeats}/${capacity}名` : `${nextUsedSeats}/未設定`}
+                {isOverCapacity ? "・定員超過" : ""}
+              </span>
+            </button>
+          );
+        })}
+
+        <button
+          type="button"
+          className="move-destination-btn unassign-btn"
+          onClick={() => onMove(null)}
+        >
+          <span className="move-destination-title">未配車に戻す</span>
+          <span className="move-destination-meta">どの車にも入れない状態にします</span>
+        </button>
+      </div>
+    </section>
   );
 }
 
