@@ -368,7 +368,11 @@ async function saveExpedition(eventData) {
 function getFetchUrl(inputUrl) {
   const parsedUrl = new URL(inputUrl);
   if (parsedUrl.hostname === "chouseisan.com") {
-    return `/chouseisan-proxy${parsedUrl.pathname}${parsedUrl.search}`;
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      return `/chouseisan-proxy${parsedUrl.pathname}${parsedUrl.search}`;
+    }
+
+    return `/api/chouseisan?url=${encodeURIComponent(parsedUrl.toString())}`;
   }
 
   return inputUrl;
