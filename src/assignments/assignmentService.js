@@ -40,10 +40,10 @@ export async function loadAssignmentData(expeditionId) {
   };
 }
 
-export async function ensureDefaultTool(expeditionId) {
+export async function ensureDefaultTool(expeditionId, existingTools) {
   const expeditionRef = doc(db, "expeditions", expeditionId);
-  const tools = await getCollectionItems(collection(expeditionRef, "tools"));
-  let added = false;
+  const tools = existingTools ?? await getCollectionItems(collection(expeditionRef, "tools"));
+  const toolsToAdd = [];
 
   const hasDefaultTool = tools.some((tool) => tool.isDefault && tool.name === "道具");
   const hasDefaultManager = tools.some(
@@ -51,36 +51,45 @@ export async function ensureDefaultTool(expeditionId) {
   );
 
   if (!hasDefaultTool) {
-    await setDoc(
-      doc(collection(expeditionRef, "tools"), "default-tool"),
-      {
-        name: "道具",
-        type: "tool",
-        seatCost: 2,
-        isDefault: true,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
-    added = true;
+    toolsToAdd.push({
+      id: "default-tool",
+      name: "道具",
+      type: "tool",
+      seatCost: 2,
+      isDefault: true,
+    });
   }
 
   if (!hasDefaultManager) {
-    await setDoc(
-      doc(collection(expeditionRef, "tools"), "default-manager"),
-      {
-        name: "監督",
-        type: "manager",
-        seatCost: 1,
-        isDefault: true,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
-    added = true;
+    toolsToAdd.push({
+      id: "default-manager",
+      name: "監督",
+      type: "manager",
+      seatCost: 1,
+      isDefault: true,
+    });
   }
 
-  return added;
+  await Promise.all(
+    toolsToAdd.map((tool) =>
+      setDoc(
+        doc(collection(expeditionRef, "tools"), tool.id),
+        {
+          name: tool.name,
+          type: tool.type,
+          seatCost: tool.seatCost,
+          isDefault: true,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
+    )
+  );
+
+  return {
+    added: toolsToAdd.length > 0,
+    tools: [...tools, ...toolsToAdd],
+  };
 }
 
 export async function addTool(expeditionId, name) {
@@ -90,12 +99,20 @@ export async function addTool(expeditionId, name) {
   }
 
   const expeditionRef = doc(db, "expeditions", expeditionId);
-  await addDoc(collection(expeditionRef, "tools"), {
+  const documentRef = await addDoc(collection(expeditionRef, "tools"), {
     name: trimmedName,
+    type: "tool",
     seatCost: 2,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+
+  return {
+    id: documentRef.id,
+    name: trimmedName,
+    type: "tool",
+    seatCost: 2,
+  };
 }
 
 export async function deleteTool(expeditionId, toolId) {

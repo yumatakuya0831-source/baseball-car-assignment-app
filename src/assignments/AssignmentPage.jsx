@@ -31,8 +31,8 @@ export default function AssignmentPage({ expeditionId }) {
     loadAssignmentData(expeditionId)
       .then((loadedData) => {
         if (!isMounted) return;
-        return ensureDefaultTool(expeditionId).then((added) =>
-          added ? loadAssignmentData(expeditionId) : loadedData
+        return ensureDefaultTool(expeditionId, loadedData.tools).then((result) =>
+          result.added ? { ...loadedData, tools: result.tools } : loadedData
         );
       })
       .then((loadedData) => {
@@ -55,24 +55,6 @@ export default function AssignmentPage({ expeditionId }) {
       isMounted = false;
     };
   }, [expeditionId]);
-
-  const reload = async () => {
-    setLoading(true);
-    try {
-      let loadedData = await loadAssignmentData(expeditionId);
-      const addedDefault = await ensureDefaultTool(expeditionId);
-      if (addedDefault) {
-        loadedData = await loadAssignmentData(expeditionId);
-      }
-      setData(loadedData);
-      setAssignmentsByCarId(buildInitialAssignments(loadedData));
-    } catch (error) {
-      console.error("assignment load error:", error);
-      alert(error.message || "配車データの取得に失敗しました。");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const items = useMemo(() => {
     if (!data) return [];
@@ -111,9 +93,11 @@ export default function AssignmentPage({ expeditionId }) {
   const handleAddTool = async (event) => {
     event.preventDefault();
     try {
-      await addTool(expeditionId, toolName);
+      const newTool = await addTool(expeditionId, toolName);
       setToolName("");
-      await reload();
+      setData((current) =>
+        current ? { ...current, tools: [...current.tools, newTool] } : current
+      );
     } catch (error) {
       alert(error.message || "道具の登録に失敗しました。");
     }
@@ -127,7 +111,14 @@ export default function AssignmentPage({ expeditionId }) {
       await deleteTool(expeditionId, item.sourceId);
       setAssignmentsByCarId((current) => moveAssignmentItem(current, item.id, null));
       setSelectedItemId((current) => (current === item.id ? "" : current));
-      await reload();
+      setData((current) =>
+        current
+          ? {
+              ...current,
+              tools: current.tools.filter((tool) => tool.id !== item.sourceId),
+            }
+          : current
+      );
     } catch (error) {
       console.error("tool delete error:", error);
       alert("道具の削除に失敗しました。");
@@ -140,7 +131,18 @@ export default function AssignmentPage({ expeditionId }) {
 
     try {
       await updateCarCapacity(expeditionId, car.id, value);
-      await reload();
+      setData((current) =>
+        current
+          ? {
+              ...current,
+              cars: current.cars.map((currentCar) =>
+                currentCar.id === car.id
+                  ? { ...currentCar, capacity: Number(value) }
+                  : currentCar
+              ),
+            }
+          : current
+      );
     } catch (error) {
       alert(error.message || "定員の更新に失敗しました。");
     }
