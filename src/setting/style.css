@@ -413,13 +413,6 @@ button {
   padding: 12px;
 }
 
-.html-paste-area {
-  min-height: 160px;
-  resize: vertical;
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 13px;
-}
-
 .share-card {
   margin-bottom: 16px;
 }
