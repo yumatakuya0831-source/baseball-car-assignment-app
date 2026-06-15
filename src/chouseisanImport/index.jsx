@@ -37,6 +37,7 @@ export default function ChouseisanImport() {
       const pageHtml = await response.text();
       const parsed = parseChouseisanEvent(pageHtml);
       setEventData({ ...parsed, sourceUrl: url });
+      setUrl("");
       setStatus("読み込みました。内容を確認して保存してください。");
     } catch (fetchError) {
       console.error("chouseisan fetch error:", fetchError);
