@@ -19,10 +19,13 @@ export default function LoginPage() {
         return;
       }
 
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      if (!result.user) {
+        throw new Error("Googleアカウント情報を取得できませんでした。");
+      }
     } catch (error) {
       console.error("google login error:", error);
-      alert(`Googleログインに失敗しました。Firebase Authenticationの設定を確認してください。\n${error.code ?? ""}`);
+      alert(`Googleログインに失敗しました。Firebase Authenticationの設定を確認してください。\n${error.code ?? error.message ?? ""}`);
     }
   };
 

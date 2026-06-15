@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../lib/firebase";
-import { browserLocalPersistence, getRedirectResult, onAuthStateChanged, setPersistence } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import LoginPage from "./LoginPage";
 
 export default function AuthGate({ children }) {
@@ -8,44 +8,12 @@ export default function AuthGate({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    let authChecked = false;
-    let redirectChecked = false;
-
-    const finishLoading = () => {
-      if (isMounted && authChecked && redirectChecked) {
-        setLoading(false);
-      }
-    };
-
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!isMounted) return;
       setUser(currentUser);
-      authChecked = true;
-      finishLoading();
+      setLoading(false);
     });
 
-    setPersistence(auth, browserLocalPersistence)
-      .then(() => getRedirectResult(auth))
-      .then((result) => {
-        if (!isMounted) return;
-        if (result?.user) {
-          setUser(result.user);
-        }
-      })
-      .catch((error) => {
-        console.error("google redirect result error:", error);
-        alert(`Googleログインに失敗しました。\n${error.code ?? ""}`);
-      })
-      .finally(() => {
-        redirectChecked = true;
-        finishLoading();
-      });
-
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
